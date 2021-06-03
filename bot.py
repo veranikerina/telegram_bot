@@ -94,7 +94,8 @@ bot.edit_message_text(chat_id=call.message.chat.id,message_id=call.message.messa
         keyboard5 = types.InlineKeyboardMarkup()
         gp1 = types.InlineKeyboardButton(text='1 т - 2,6 т', callback_data='light')
         gp2 = types.InlineKeyboardButton(text='2,7 т - 6,2 т', callback_data='heavy')
-        keyboard5.add(button)
+        backbutton = types.InlineKeyboardButton(text='назад', callback_data= 'mainmenu')
+        keyboard5.add(gp1, gp2, backbutton)
 
     bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text='выбор сделан', reply_markup=keyboard3)
 
