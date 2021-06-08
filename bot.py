@@ -1,19 +1,22 @@
 #Чат-бот ТГ, который поможет подобрать необходимый автомобиль для аренды, оставить заявку, узнать информацию об аренде, оставить отзыв
 import telebot
 import config
+import psycopg2
 from telebot import types
+from requests import get
 bot = telebot.TeleBot(config.TOKEN)
 
 @bot.message_handler(commands=['start'])
 def welcome(message):
     #keyboard
-    keyboardmain = types.InlineKeyboardMarkup(row_width=4)
+    keyboardmain = types.InlineKeyboardMarkup(row_width=2)
     item1 = types.InlineKeyboardButton(text='Подобрать авто', callback_data='first')
-    item2 = types.InlineKeyboardButton(text='Оставить заявку', callback_data='second')
-    item3 = types.InlineKeyboardButton(text='Информация', callback_data='third')
-    item4 = types.InlineKeyboardButton(text='Отзыв', callback_data='fourth')
+    item2 = types.InlineKeyboardButton(text='Рассчитать стоимость', callback_data='second')
+    item3 = types.InlineKeyboardButton(text='Оставить заявку', callback_data='third')
+    item4 = types.InlineKeyboardButton(text='Информация', callback_data='fourth')
+    item5 = types.InlineKeyboardButton(text='Отзыв', callback_data='fifth')
 
-    keyboardmain.add(item1, item2, item3, item4)
+    keyboardmain.add(item1, item2, item3, item4, item5)
 #приветствие клиента
     bot.send_message(message.chat.id, 'Привет, {0.first_name}!\nЯ - <b>{1.first_name}</b>, бот созданный чтобы помочь подобрать автомобиль в аренду.'.format(message.from_user, bot.get_me()),parse_mode='html', reply_markup=markup)
 
@@ -21,12 +24,15 @@ def welcome(message):
 def callback_inline(call):
     if call.data == 'mainmenu':
         keyboardmain = types.InlineKeyboardMarkup(row_width=4)
-        item1 = types.InlineKeyboardButton(text='Подобрать авто', callback_data='first')
-        item2 = types.InlineKeyboardButton(text='Оставить заявку', callback_data='second')
-        item3 = types.InlineKeyboardButton(text='Информация', callback_data='third')
-        item4 = types.InlineKeyboardButton(text='Отзыв', callback_data='fourth')
-        keyboardmain.add(item1, item2, item3, item4)
-bot.edit_message_text(chat_id=call.message.chat.id,message_id=call.message.message_id, text='меню',reply_markup=keyboardmain)
+        iitem1 = types.InlineKeyboardButton(text='Подобрать авто', callback_data='first')
+        item2 = types.InlineKeyboardButton(text='Рассчитать стоимость', callback_data='second')
+        item3 = types.InlineKeyboardButton(text='Оставить заявку', callback_data='third')
+        item4 = types.InlineKeyboardButton(text='Информация', callback_data='fourth')
+        item5 = types.InlineKeyboardButton(text='Отзыв', callback_data='fifth')
+
+        keyboardmain.add(item1, item2, item3, item4, item5)
+
+    bot.edit_message_text(chat_id=call.message.chat.id,message_id=call.message.message_id, text='меню',reply_markup=keyboardmain)
 
     if call.data == 'first':
         keyboard = types.InlineKeyboardMarkup()
@@ -35,10 +41,35 @@ bot.edit_message_text(chat_id=call.message.chat.id,message_id=call.message.messa
         func3 = types.InlineKeyboardMarkup(text='промтоварный', callback_data='t')
         func4 = types.InlineKeyboardMarkup(text='специальный', callback_data='s')
         backbutton = types.InlineKeyboardButton(text='назад', callback_data= 'mainmenu')
+
         keyboard.add(func1, func2, func3, func4, backbutton)
 
-    bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text='выберите функцию', reply_markup=keyboard)
+        bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text='выберите функцию', reply_markup=keyboard)
+
+        if call.data == 'g':
+            bot.send_message(message.chat.id, 'Для вас подойдет ГАЗон Next')
+            bot.send_photo(message.chat.id, get('https://azgaz.ru/upload/resize_cache/iblock/cbb/950_495_0/cbbfcabcffabef867f2438e0029bb590.jpg').content)
+            bot.send_message(message.chat.id, 'или ГАЗель Next')
+            bot.send_photo(message.chat.id, get('https://azgaz.ru/upload/resize_cache/iblock/76d/950_495_0/76d347a35b1c275d11a05f15fda153e0.jpg').content)
+
+        elif call.data == 'p':
+            bot.send_message(message.chat.id, 'Для вас подойдет ГАЗель Next')
+            bot.send_photo(message.chat.id, get('https://azgaz.ru/upload/resize_cache/iblock/3e3/950_495_0/3e3c8cade88e53f45917a982b787c0db.jpg').content)
+            bot.send_message(message.chat.id, 'или ГАЗель City')
+            bot.send_photo(message.chat.id, get('https://azgaz.ru/new-style/images/innoprom2021/city_bus.png').content)
+
+        elif call.data == 't':
+            bot.send_message(message.chat.id, 'Для вас подойдет Валдай Next')
+            bot.send_photo(message.chat.id, get('https://azgaz.ru/upload/resize_cache/iblock/043/950_495_0/Valday-Next-Retouch-and-moldindg-replacement-DSC07926-extended-copy.jpg').content)
+
+        elif call.data == 's':
+            bot.send_message(message.chat.id, 'Для вас подойдет ГАЗон Next')
+            bot.send_photo(message.chat.id, get('https://azgaz.ru/upload/resize_cache/iblock/853/950_495_0/8531b7464b0788a1a1e306e6a15c4689.jpg').content)
+
     elif call.data == 'second':
+        bot.send_message(message.from_user.id, 'Для рассчета стоимости перейдите к боту @GazCalc_Bot')
+
+    elif call.data == 'third':
         name = ''
         mail = ''
         num = 0
@@ -70,7 +101,7 @@ bot.edit_message_text(chat_id=call.message.chat.id,message_id=call.message.messa
                      bot.send_message(message.from_user.id, 'Цифрами, пожалуйста')
             bot.send_message(message.from_user.id, 'Проверь введеную информацию')
 
-    elif call.data == 'third':
+    elif call.data == 'fourth':
         keyboard3 = types.InlineKeyboardMarkup()
         qest1 = types.InlineKeyboardMarkup(text='На какой срок я могу взять автомобиль в аренду?', callback_data='q1')
         qest2 = types.InlineKeyboardMarkup(text='Как происходит оформление аренды?', callback_data='q2')
@@ -82,22 +113,24 @@ bot.edit_message_text(chat_id=call.message.chat.id,message_id=call.message.messa
         keyboard3.add(qest1, qest2, qest3, qest4, qest5, qest6, backbutton)
         bot.send_message(message.chat.id, 'Что вас интересует?')
 
-    elif call.data == 'fourth':
-        rev = ''
+        if call.data == 'q1':
+            bot.send_message(message.chat.id, 'Срок аренды от 6 месяцев до 3 лет')
+        if call.data == 'q2':
+            bot.send_message(message.chat.id, 'Для оформления аренды необходимо оставить заявку, затем с вами свяжется менеджер для уточнения условий. В офисе компании составляется и подписывается договор аренды.')
+        if call.data == 'q3':
+            bot.send_message(message.chat.id, 'Предварительный расчет аренды производится на нашем сайте или в телеграмботе')
+        if call.data == 'q4':
+            bot.send_message(message.chat.id, 'В аренду входит страховка КАСКО, ОСАГО, НС, а также страхование пассажиров')
+        if call.data == 'q5':
+            bot.send_message(message.chat.id, 'Сервисное обслуживание включает в себя ТО, ремонт и замену деталей')
+        if call.data == 'q6':
+            bot.send_message(message.chat.id, 'Среди дополнительных услуг: защита от поломок, подменный автомобиль, коучинг водителей')
+
+    elif call.data == 'fifth':
         global rev
+        rev = ''
         rev = message.text
         bot.send_message('Введите отзыв')
-
-
-    elif call.data == 'g' or call.data == 'p' or call.data == 't' or call.data == 's':
-        bot.answer_callback_query(callback_query_id=call.id, show_alert=True, text='грузоподъемность')
-        keyboard5 = types.InlineKeyboardMarkup()
-        gp1 = types.InlineKeyboardButton(text='1 т - 2,6 т', callback_data='light')
-        gp2 = types.InlineKeyboardButton(text='2,7 т - 6,2 т', callback_data='heavy')
-        backbutton = types.InlineKeyboardButton(text='назад', callback_data= 'mainmenu')
-        keyboard5.add(gp1, gp2, backbutton)
-
-    bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text='выбор сделан', reply_markup=keyboard3)
 
 bot.polling(none_stop=True)
 
