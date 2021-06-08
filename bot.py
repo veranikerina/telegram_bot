@@ -80,12 +80,12 @@ def callback_inline(call):
             req(message)
 
         elif call.data == 'fourth':
-            keyboard3 = types.InlineKeyboardMarkup()
-            qest1 = types.InlineKeyboardButton(text='На какой срок я могу взять автомобиль в аренду?', callback_data='q1')
-            qest2 = types.InlineKeyboardButton(text='Как происходит оформление аренды?', callback_data='q2')
-            qest3 = types.InlineKeyboardButton(text='Могу ли я провести предварительный расчет стоимости аренды?',callback_data='q3')
-            qest4 = types.InlineKeyboardButton(text='Входит ли страхование в аренду?', callback_data='q4')
-            qest5 = types.InlineKeyboardButton(text='Сервисное обслуживание автомобиля по сервисному контракту',callback_data='q5')
+            keyboard3 = types.InlineKeyboardMarkup(row_width=1)
+            qest1 = types.InlineKeyboardButton(text='Срок аренды', callback_data='q1')
+            qest2 = types.InlineKeyboardButton(text='Оформление аренды', callback_data='q2')
+            qest3 = types.InlineKeyboardButton(text='Предварительный расчет стоимости аренды',callback_data='q3')
+            qest4 = types.InlineKeyboardButton(text='Страхование', callback_data='q4')
+            qest5 = types.InlineKeyboardButton(text='Сервисное обслуживание',callback_data='q5')
             qest6 = types.InlineKeyboardButton(text='Дополнительные услуги', callback_data='q6')
             backbutton = types.InlineKeyboardButton(text='назад', callback_data='mainmenu')
             keyboard3.add(qest1, qest2, qest3, qest4, qest5, qest6, backbutton)
@@ -123,7 +123,7 @@ def callback_inline(call):
         if call.data == 'q2':
             bot.send_message(message.chat.id, 'Для оформления аренды необходимо оставить заявку, затем с вами свяжется менеджер для уточнения условий. В офисе компании составляется и подписывается договор аренды.')
         if call.data == 'q3':
-            bot.send_message(message.chat.id, 'Предварительный расчет аренды производится на нашем сайте или в телеграмботе')
+            bot.send_message(message.chat.id, 'Предварительный расчет аренды производится на нашем сайте http://gaz-arenda.tilda.ws/ или в телеграмботе @GazCalc_Bot')
         if call.data == 'q4':
             bot.send_message(message.chat.id, 'В аренду входит страховка КАСКО, ОСАГО, НС, а также страхование пассажиров')
         if call.data == 'q5':
