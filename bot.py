@@ -1,6 +1,7 @@
 #Чат-бот ТГ, который поможет подобрать необходимый автомобиль для аренды, оставить заявку, узнать информацию об аренде, оставить отзыв
 import telebot
 import config
+from requests import get
 from telebot import types
 
 bot = telebot.TeleBot(config.TOKEN)
