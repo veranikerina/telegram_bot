@@ -2,7 +2,7 @@
 import telebot
 import config
 from telebot import types
-from requests import get
+
 bot = telebot.TeleBot(config.TOKEN)
 
 name = ''
@@ -87,7 +87,7 @@ def bot_message(message):
                 bot.send_message(message.chat.id, 'Введите ваш отзыв')
                 global rev
                 rev = message.text
-                bot.send_message(message.chat.id, 'Ваш отзыв: - {}'.format(rev))
+                bot.send_message(message.chat.id, 'Спасибо')
                 with open('rev.txt', 'a') as fd:
                         fd.write('{}\n'.format(rev))
 
